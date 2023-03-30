@@ -1,5 +1,7 @@
 import { ErrorMapper } from "utils/ErrorMapper";
 
+import { roleHarvester } from "role/harvester";
+
 declare global {
   /*
     Example types, expand on these or remove them and add your own.
@@ -22,6 +24,7 @@ declare global {
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
       log: any;
@@ -38,6 +41,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
+    }
+  }
+
+  for (const name in Memory.creeps) {
+    if (Game.creeps[name].memory.role === "harvester") {
+      roleHarvester.run(Game.creeps[name]);
     }
   }
 });
